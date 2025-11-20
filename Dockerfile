@@ -10,6 +10,9 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
+# Give execute permission to mvnw
+RUN chmod +x mvnw
+
 # Download dependencies (cache layer)
 RUN ./mvnw dependency:go-offline -B
 
@@ -27,11 +30,8 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Copy the JAR created in build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# The port your Spring Boot application uses
 EXPOSE 8080
 
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
